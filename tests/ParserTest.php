@@ -4,6 +4,8 @@ use PHPUnit\Framework\TestCase;
 
 class ParserTest extends TestCase
 {
+    private $parser;
+
     public function setUp() : void
     {
         $this->parser = new Lex\Parser();
@@ -319,7 +321,7 @@ HTML;
 
     /**
      * Test that the toArray method converts an standard object to an array
-     */ 
+     */
     public function testObjectToArray()
     {
         $data = new stdClass;

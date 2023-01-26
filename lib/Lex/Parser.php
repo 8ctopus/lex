@@ -25,12 +25,18 @@ class Parser
 
     protected $callbackTagRegex = '';
     protected $callbackLoopTagRegex = '';
+    protected $callbackNameRegex = '';
+    protected $callbackBlockRegex = '';
+
+    protected $recursiveRegex = '';
 
     protected $noparseRegex = '';
 
     protected $conditionalRegex = '';
     protected $conditionalElseRegex = '';
     protected $conditionalEndRegex = '';
+    protected $conditionalNotRegex = '';
+    protected $conditionalExistsRegex = '';
     protected $conditionalData = array();
 
     protected static $extractions = array(
