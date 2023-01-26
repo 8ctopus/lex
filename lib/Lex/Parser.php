@@ -23,8 +23,6 @@ class Parser
     protected $variableLoopRegex = '';
     protected $variableTagRegex = '';
 
-    protected $callbackTagRegex = '';
-    protected $callbackLoopTagRegex = '';
     protected $callbackNameRegex = '';
     protected $callbackBlockRegex = '';
 
