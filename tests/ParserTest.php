@@ -56,7 +56,10 @@ class ParserTest extends TestCase
         $this->assertSame("true", $method->invoke($this->parser, array('foo')));
         $this->assertSame("false", $method->invoke($this->parser, array()));
 
-        $mock = $this->createPartialMock('stdClass', array('__toString'));
+        $version = explode('.', phpversion());
+        $class = ((int) $version[0] >= 8) ? 'Stringable' : 'stdClass';
+
+        $mock = $this->createPartialMock($class, array('__toString'));
         $mock->expects($this->any())
              ->method('__toString')
              ->will($this->returnValue('obj_string'));
