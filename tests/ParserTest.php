@@ -1,9 +1,10 @@
 <?php
 
-class ParserTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
 
-    public function setUp()
+class ParserTest extends TestCase
+{
+    public function setUp() : void
     {
         $this->parser = new Lex\Parser();
     }
@@ -55,7 +56,7 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $this->assertSame("true", $method->invoke($this->parser, array('foo')));
         $this->assertSame("false", $method->invoke($this->parser, array()));
 
-        $mock = $this->getMock('stdClass', array('__toString'));
+        $mock = $this->createPartialMock('stdClass', array('__toString'));
         $mock->expects($this->any())
              ->method('__toString')
              ->will($this->returnValue('obj_string'));
