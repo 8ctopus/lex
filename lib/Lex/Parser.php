@@ -54,12 +54,12 @@ class Parser
 
         $this->setupRegex();
         $this->allowPhp = $allowPhp;
-        
+
         // Only convert objects to arrays
         if (is_object($data)) {
-            $data = $this->toArray($data);    
+            $data = $this->toArray($data);
         }
-        
+
         // Is this the first time parse() is called?
         if (self::$data === null) {
             // Let's store the local data array for later use.
@@ -153,7 +153,7 @@ class Parser
                             }
 
                             $looped_text .= $str;
-                        }                        
+                        }
                     }
                     $text = preg_replace('/'.preg_quote($match[0][0], '/').'/m', addcslashes($looped_text, '\\$'), $text, 1);
                 } else { // It's a callback block.
@@ -749,10 +749,10 @@ class Parser
 
     /**
      * Convert objects to arrays
-     * 
+     *
      * @param mixed $data
      * @return array
-     */ 
+     */
     public function toArray($data = array())
     {
         if ($data instanceof ArrayableInterface) {
