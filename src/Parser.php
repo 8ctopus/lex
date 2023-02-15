@@ -148,24 +148,24 @@ class Parser
          * $data_matches[][2][0] is the content to be looped over
          * $data_matches[][2][1] is the offset of content to be looped over
          */
-        if (preg_match_all($this->variableLoopRegex, $text, $data_matches, PREG_SET_ORDER + PREG_OFFSET_CAPTURE)) {
-            foreach ($data_matches as $index => $match) {
-                if ($loop_data = $this->getVariable($match[1][0], $data)) {
-                    $looped_text = '';
-                    if (is_array($loop_data) || ($loop_data instanceof IteratorAggregate)) {
-                        foreach ($loop_data as $item_data) {
-                            $str = $this->extractLoopedTags($match[2][0], $item_data, $callback);
-                            $str = $this->parseConditionals($str, $item_data, $callback);
+        if (preg_match_all($this->variableLoopRegex, $text, $dataMatches, PREG_SET_ORDER + PREG_OFFSET_CAPTURE)) {
+            foreach ($dataMatches as $index => $match) {
+                if ($loopData = $this->getVariable($match[1][0], $data)) {
+                    $loopedText = '';
+                    if (is_array($loopData) || ($loopData instanceof IteratorAggregate)) {
+                        foreach ($loopData as $itemData) {
+                            $str = $this->extractLoopedTags($match[2][0], $itemData, $callback);
+                            $str = $this->parseConditionals($str, $itemData, $callback);
                             $str = $this->injectExtractions($str, 'looped_tags');
-                            $str = $this->parseVariables($str, $item_data, $callback);
+                            $str = $this->parseVariables($str, $itemData, $callback);
                             if ($callback !== null) {
-                                $str = $this->parseCallbackTags($str, $item_data, $callback);
+                                $str = $this->parseCallbackTags($str, $itemData, $callback);
                             }
 
-                            $looped_text .= $str;
+                            $loopedText .= $str;
                         }
                     }
-                    $text = preg_replace('/' . preg_quote($match[0][0], '/') . '/m', addcslashes($looped_text, '\\$'), $text, 1);
+                    $text = preg_replace('/' . preg_quote($match[0][0], '/') . '/m', addcslashes($loopedText, '\\$'), $text, 1);
                 } else { // It's a callback block.
                     // Let's extract it so it doesn't conflict
                     // with the local scope variables in the next step.
@@ -175,13 +175,13 @@ class Parser
         }
 
         /**
-         * $data_matches[0] is the raw data tag
-         * $data_matches[1] is the data variable (dot notated)
+         * $dataMatches[0] is the raw data tag
+         * $dataMatches[1] is the data variable (dot notated)
          */
-        if (preg_match_all($this->variableTagRegex, $text, $data_matches)) {
-            foreach ($data_matches[1] as $index => $var) {
+        if (preg_match_all($this->variableTagRegex, $text, $dataMatches)) {
+            foreach ($dataMatches[1] as $index => $var) {
                 if (($val = $this->getVariable($var, $data, '__lex_no_value__')) !== '__lex_no_value__') {
-                    $text = str_replace($data_matches[0][$index], $val ?? '', $text);
+                    $text = str_replace($dataMatches[0][$index], $val ?? '', $text);
                 }
             }
         }
@@ -226,13 +226,13 @@ class Parser
             $start = $match[0][1];
             $name = $match[1][0];
             if (isset($match[2])) {
-                $cb_data = $data;
+                $cbData = $data;
                 if (!empty(self::$callbackData)) {
                     $data = $this->toArray($data);
-                    $cb_data = array_merge(self::$callbackData, $data);
+                    $cbData = array_merge(self::$callbackData, $data);
                 }
-                $raw_params = $this->injectExtractions($match[2][0], '__cond_str');
-                $parameters = $this->parseParameters($raw_params, $cb_data, $callback);
+                $rawParams = $this->injectExtractions($match[2][0], '__cond_str');
+                $parameters = $this->parseParameters($rawParams, $cbData, $callback);
             }
 
             if (isset($match[3])) {
@@ -240,16 +240,16 @@ class Parser
             }
             $content = '';
 
-            $temp_text = substr($text, $start + strlen($tag));
-            if (preg_match('/\{\{\s*\/' . preg_quote($name, '/') . '\s*\}\}/m', $temp_text, $match, PREG_OFFSET_CAPTURE) && !$selfClosed) {
-                $content = substr($temp_text, 0, $match[0][1]);
+            $tempText = substr($text, $start + strlen($tag));
+            if (preg_match('/\{\{\s*\/' . preg_quote($name, '/') . '\s*\}\}/m', $tempText, $match, PREG_OFFSET_CAPTURE) && !$selfClosed) {
+                $content = substr($tempText, 0, $match[0][1]);
                 $tag .= $content . $match[0][0];
 
                 // Is there a nested block under this one existing with the same name?
-                $nested_regex = '/\{\{\s*(' . preg_quote($name, '/') . ')(\s.*?)\}\}(.*?)\{\{\s*\/\1\s*\}\}/ms';
-                if (preg_match($nested_regex, $content . $match[0][0], $nested_matches)) {
-                    $nested_content = preg_replace('/\{\{\s*\/' . preg_quote($name, '/') . '\s*\}\}/m', '', $nested_matches[0]);
-                    $content = $this->createExtraction('nested_looped_tags', $nested_content, $nested_content, $content);
+                $nestedRegex = '/\{\{\s*(' . preg_quote($name, '/') . ')(\s.*?)\}\}(.*?)\{\{\s*\/\1\s*\}\}/ms';
+                if (preg_match($nestedRegex, $content . $match[0][0], $nestedMatches)) {
+                    $nestedContent = preg_replace('/\{\{\s*\/' . preg_quote($name, '/') . '\s*\}\}/m', '', $nestedMatches[0]);
+                    $content = $this->createExtraction('nested_looped_tags', $nestedContent, $nestedContent, $content);
                 }
             }
 
@@ -293,8 +293,8 @@ class Parser
             $condition = $match[2];
 
             // Extract all literal string in the conditional to make it easier
-            if (preg_match_all('/(["\']).*?(?<!\\\\)\1/', $condition, $str_matches)) {
-                foreach ($str_matches[0] as $m) {
+            if (preg_match_all('/(["\']).*?(?<!\\\\)\1/', $condition, $strMatches)) {
+                foreach ($strMatches[0] as $m) {
                     $condition = $this->createExtraction('__cond_str', $m, $m, $condition);
                 }
             }
@@ -318,8 +318,8 @@ class Parser
             }
 
             // Re-extract the strings that have now been possibly added.
-            if (preg_match_all('/(["\']).*?(?<!\\\\)\1/', $condition, $str_matches)) {
-                foreach ($str_matches[0] as $m) {
+            if (preg_match_all('/(["\']).*?(?<!\\\\)\1/', $condition, $strMatches)) {
+                foreach ($strMatches[0] as $m) {
                     $condition = $this->createExtraction('__cond_str', $m, $m, $condition);
                 }
             }
@@ -361,55 +361,55 @@ class Parser
      * Goes recursively through a callback tag with a passed child array.
      *
      * @param string $text      - The replaced text after a callback
-     * @param string $orig_text - The original text, before a callback is called
+     * @param string $origText - The original text, before a callback is called
      * @param mixed  $callback
      *
      * @return string $text
      */
-    public function parseRecursives(string $text, string $orig_text, $callback) : string
+    public function parseRecursives(string $text, string $origText, $callback) : string
     {
         // Is there a {{ *recursive [array_key]* }} tag here, let's loop through it.
         if (preg_match($this->recursiveRegex, $text, $match)) {
-            $array_key = $match[1];
+            $arrayKey = $match[1];
             $tag = $match[0];
-            $next_tag = null;
-            $children = self::$callbackData[$array_key];
-            $child_count = count($children);
+            $nextTag = null;
+            $children = self::$callbackData[$arrayKey];
+            $childCount = count($children);
             $count = 1;
 
             // Is the array not multi-dimensional? Let's make it multi-dimensional.
-            if ($child_count === count($children, COUNT_RECURSIVE)) {
+            if ($childCount === count($children, COUNT_RECURSIVE)) {
                 $children = [$children];
-                $child_count = 1;
+                $childCount = 1;
             }
 
             foreach ($children as $child) {
-                $has_children = true;
+                $hasChildren = true;
 
                 // If this is a object let's convert it to an array.
                 $child = $this->toArray($child);
 
                 // Does this child not contain any children?
                 // Let's set it as empty then to avoid any errors.
-                if (!array_key_exists($array_key, $child)) {
-                    $child[$array_key] = [];
-                    $has_children = false;
+                if (!array_key_exists($arrayKey, $child)) {
+                    $child[$arrayKey] = [];
+                    $hasChildren = false;
                 }
 
-                $replacement = $this->parse($orig_text, $child, $callback, $this->allowPhp);
+                $replacement = $this->parse($origText, $child, $callback, $this->allowPhp);
 
                 // If this is the first loop we'll use $tag as reference, if not
                 // we'll use the previous tag ($next_tag)
-                $current_tag = ($next_tag !== null) ? $next_tag : $tag;
+                $currentTag = ($nextTag !== null) ? $nextTag : $tag;
 
                 // If this is the last loop set the next tag to be empty
                 // otherwise hash it.
-                $next_tag = ($count === $child_count) ? '' : md5($tag . $replacement);
+                $nextTag = ($count === $childCount) ? '' : md5($tag . $replacement);
 
-                $text = str_replace($current_tag, $replacement . $next_tag, $text);
+                $text = str_replace($currentTag, $replacement . $nextTag, $text);
 
-                if ($has_children) {
-                    $text = $this->parseRecursives($text, $orig_text, $callback);
+                if ($hasChildren) {
+                    $text = $this->parseRecursives($text, $origText, $callback);
                 }
                 ++$count;
             }
@@ -713,19 +713,19 @@ class Parser
         } else {
             $parts = explode($this->scopeGlue, $key);
         }
-        foreach ($parts as $key_part) {
+        foreach ($parts as $keyPart) {
             if (is_array($data)) {
-                if (!array_key_exists($key_part, $data)) {
+                if (!array_key_exists($keyPart, $data)) {
                     return $default;
                 }
 
-                $data = $data[$key_part];
+                $data = $data[$keyPart];
             } elseif (is_object($data)) {
-                if (!isset($data->{$key_part})) {
+                if (!isset($data->{$keyPart})) {
                     return $default;
                 }
 
-                $data = $data->{$key_part};
+                $data = $data->{$keyPart};
             } else {
                 return $default;
             }
@@ -769,8 +769,8 @@ class Parser
         $this->conditionalData = $data;
         $this->inCondition = true;
         // Extract all literal string in the conditional to make it easier
-        if (preg_match_all('/(["\']).*?(?<!\\\\)\1/', $parameters, $str_matches)) {
-            foreach ($str_matches[0] as $m) {
+        if (preg_match_all('/(["\']).*?(?<!\\\\)\1/', $parameters, $strMatches)) {
+            foreach ($strMatches[0] as $m) {
                 $parameters = $this->createExtraction('__param_str', $m, $m, $parameters);
             }
         }
