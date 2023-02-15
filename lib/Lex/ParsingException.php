@@ -9,4 +9,8 @@
 
 namespace Lex;
 
-class ParsingException extends \Exception {}
+use Exception;
+
+class ParsingException extends Exception
+{
+}
