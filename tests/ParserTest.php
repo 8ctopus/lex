@@ -6,11 +6,11 @@ use PHPUnit\Framework\TestCase;
  * @internal
  *
  */
-class ParserTest extends TestCase
+final class ParserTest extends TestCase
 {
     private $parser;
 
-    public function setUp() : void
+    protected function setUp() : void
     {
         $this->parser = new Lex\Parser();
     }
@@ -29,48 +29,48 @@ class ParserTest extends TestCase
         ];
     }
 
-    public function testCanSetScopeGlue()
+    public function testCanSetScopeGlue(): void
     {
         $this->parser->scopeGlue('~');
         $scopeGlue = new ReflectionProperty($this->parser, 'scopeGlue');
 
-        $this->assertTrue($scopeGlue->isProtected());
+        static::assertTrue($scopeGlue->isProtected());
 
         $scopeGlue->setAccessible(true);
-        $this->assertEquals('~', $scopeGlue->getValue($this->parser));
+        static::assertSame('~', $scopeGlue->getValue($this->parser));
     }
 
-    public function testCanGetScopeGlue()
+    public function testCanGetScopeGlue(): void
     {
         $this->parser->scopeGlue('~');
-        $this->assertEquals('~', $this->parser->scopeGlue());
+        static::assertSame('~', $this->parser->scopeGlue());
     }
 
-    public function testValueToLiteral()
+    public function testValueToLiteral(): void
     {
         $method = new ReflectionMethod($this->parser, 'valueToLiteral');
 
-        $this->assertTrue($method->isProtected());
+        static::assertTrue($method->isProtected());
 
         $method->setAccessible(true);
 
-        $this->assertSame('NULL', $method->invoke($this->parser, null));
-        $this->assertSame('true', $method->invoke($this->parser, true));
-        $this->assertSame('false', $method->invoke($this->parser, false));
-        $this->assertSame("'some_string'", $method->invoke($this->parser, 'some_string'));
-        $this->assertSame('24', $method->invoke($this->parser, 24));
-        $this->assertSame('true', $method->invoke($this->parser, ['foo']));
-        $this->assertSame('false', $method->invoke($this->parser, []));
+        static::assertSame('NULL', $method->invoke($this->parser, null));
+        static::assertSame('true', $method->invoke($this->parser, true));
+        static::assertSame('false', $method->invoke($this->parser, false));
+        static::assertSame("'some_string'", $method->invoke($this->parser, 'some_string'));
+        static::assertSame('24', $method->invoke($this->parser, 24));
+        static::assertSame('true', $method->invoke($this->parser, ['foo']));
+        static::assertSame('false', $method->invoke($this->parser, []));
 
-        $version = explode('.', phpversion());
+        $version = explode('.', PHP_VERSION);
         $class = ((int) $version[0] >= 8) ? 'Stringable' : 'stdClass';
 
         $mock = $this->createPartialMock($class, ['__toString']);
-        $mock->expects($this->any())
+        $mock->expects(static::any())
             ->method('__toString')
-            ->will($this->returnValue('obj_string'));
+            ->willReturn('obj_string');
 
-        $this->assertSame("'obj_string'", $method->invoke($this->parser, $mock));
+        static::assertSame("'obj_string'", $method->invoke($this->parser, $mock));
     }
 
     /**
@@ -78,27 +78,27 @@ class ParserTest extends TestCase
      *
      * @param mixed $data
      */
-    public function testGetVariable($data)
+    public function testGetVariable($data): void
     {
         $method = new ReflectionMethod($this->parser, 'getVariable');
 
-        $this->assertTrue($method->isProtected());
+        static::assertTrue($method->isProtected());
 
         $method->setAccessible(true);
 
-        $this->assertEquals('Lex', $method->invoke($this->parser, 'name', $data));
-        $this->assertEquals(null, $method->invoke($this->parser, 'age', $data));
-        $this->assertEquals(false, $method->invoke($this->parser, 'age', $data, false));
+        static::assertSame('Lex', $method->invoke($this->parser, 'name', $data));
+        static::assertNull($method->invoke($this->parser, 'age', $data));
+        static::assertFalse($method->invoke($this->parser, 'age', $data, false));
 
-        $this->assertEquals(true, $method->invoke($this->parser, 'filters.enable', $data));
-        $this->assertEquals(null, $method->invoke($this->parser, 'filters.name', $data));
-        $this->assertEquals(false, $method->invoke($this->parser, 'filters.name', $data, false));
+        static::assertTrue($method->invoke($this->parser, 'filters.enable', $data));
+        static::assertNull($method->invoke($this->parser, 'filters.name', $data));
+        static::assertFalse($method->invoke($this->parser, 'filters.name', $data, false));
     }
 
     /**
      * Regression test for https://www.pyrocms.com/forums/topics/view/19686
      */
-    public function testFalseyVariableValuesParseProperly()
+    public function testFalseyVariableValuesParseProperly(): void
     {
         $data = [
             'zero_num' => 0,
@@ -114,7 +114,7 @@ class ParserTest extends TestCase
 
         $result = $this->parser->parseVariables($text, $data);
 
-        $this->assertEquals($expected, $result);
+        static::assertSame($expected, $result);
     }
 
     /**
@@ -122,13 +122,13 @@ class ParserTest extends TestCase
      *
      * @param mixed $data
      */
-    public function testExists($data)
+    public function testExists($data): void
     {
         $result = $this->parser->parse('{{ if exists name }}1{{ else }}0{{ endif }}', $data);
-        $this->assertEquals('1', $result);
+        static::assertSame('1', $result);
 
         $result = $this->parser->parse('{{ if not exists age }}0{{ else }}1{{ endif }}', $data);
-        $this->assertEquals('0', $result);
+        static::assertSame('0', $result);
     }
 
     /**
@@ -138,24 +138,24 @@ class ParserTest extends TestCase
      *
      * @param mixed $data
      */
-    public function testUndefinedInConditional($data)
+    public function testUndefinedInConditional($data): void
     {
         $result = $this->parser->parse('{{ if age }}0{{ else }}1{{ endif }}', $data);
-        $this->assertEquals('1', $result);
+        static::assertSame('1', $result);
     }
 
     /**
      * Regression test for https://github.com/pyrocms/pyrocms/issues/1906
      */
-    public function testCallbacksInConditionalComparison()
+    public function testCallbacksInConditionalComparison(): void
     {
         $result = $this->parser->parse("{{ if foo.bar.baz == 'yes' }}Yes{{ else }}No{{ endif }}", [], function ($name, $attributes, $content) {
-            if ($name == 'foo.bar.baz') {
+            if ($name === 'foo.bar.baz') {
                 return 'yes';
             }
             return 'no';
         });
-        $this->assertEquals('Yes', $result);
+        static::assertSame('Yes', $result);
     }
 
     /**
@@ -166,7 +166,7 @@ class ParserTest extends TestCase
      * - TOTAL_GT_0   Tests total > 0
      * - HAS_ENTRIES  Tests isset(entries)
      */
-    public function testDeepCallbacksInConditionalComparison()
+    public function testDeepCallbacksInConditionalComparison(): void
     {
         $data = [
             'pagination' => null,
@@ -311,104 +311,104 @@ HTML;
 
         $result = $this->parser->parse($html, $data);
 
-        $this->assertEquals($expected_html, $result);
+        static::assertSame($expected_html, $result);
     }
 
-    public function testSelfClosingTag()
+    public function testSelfClosingTag(): void
     {
         $self = $this;
         $result = $this->parser->parse('{{ foo.bar.baz /}}Here{{ foo.bar.baz }}Content{{ /foo.bar.baz }}', [], function ($name, $attributes, $content) {
-            if ($content == '') {
+            if ($content === '') {
                 return 'DanWas';
             } else {
                 return '';
             }
         });
-        $this->assertEquals('DanWasHere', $result);
+        static::assertSame('DanWasHere', $result);
     }
 
     /**
      * Test that the toArray method converts an standard object to an array
      */
-    public function testObjectToArray()
+    public function testObjectToArray(): void
     {
         $data = new stdClass();
         $data->foo = 'bar';
 
         $result = $this->parser->toArray($data);
 
-        $this->assertEquals(['foo' => 'bar'], $result);
+        static::assertSame(['foo' => 'bar'], $result);
     }
 
     /**
      * Test that the toArray method converts an object that implements ArrayableInterface to an array
      */
-    public function testArrayableInterfaceToArray()
+    public function testArrayableInterfaceToArray(): void
     {
         $data = new Lex\ArrayableObjectExample();
 
         $result = $this->parser->toArray($data);
 
-        $this->assertEquals(['foo' => 'bar'], $result);
+        static::assertSame(['foo' => 'bar'], $result);
     }
 
     /**
      * Test that the toArray method converts an integer to an array
      */
-    public function testIntegerToArray()
+    public function testIntegerToArray(): void
     {
         $data = 1;
 
         $result = $this->parser->toArray($data);
 
-        $this->assertEquals(true, is_array($result));
+        static::assertTrue(is_array($result));
     }
 
     /**
      * Test that the toArray method converts an string to an array
      */
-    public function testStringToArray()
+    public function testStringToArray(): void
     {
         $data = 'Hello World';
 
         $result = $this->parser->toArray($data);
 
-        $this->assertEquals(true, is_array($result));
+        static::assertTrue(is_array($result));
     }
 
     /**
      * Test that the toArray method converts an boolean to an array
      */
-    public function testBooleanToArray()
+    public function testBooleanToArray(): void
     {
         $data = true;
 
         $result = $this->parser->toArray($data);
 
-        $this->assertEquals(true, is_array($result));
+        static::assertTrue(is_array($result));
     }
 
     /**
      * Test that the toArray method converts an null value to an array
      */
-    public function testNullToArray()
+    public function testNullToArray(): void
     {
         $data = null;
 
         $result = $this->parser->toArray($data);
 
-        $this->assertEquals(true, is_array($result));
+        static::assertTrue(is_array($result));
     }
 
     /**
      * Test that the toArray method converts an float value to an array
      */
-    public function testFloatToArray()
+    public function testFloatToArray(): void
     {
         $data = 1.23456789;
 
         $result = $this->parser->toArray($data);
 
-        $this->assertEquals(true, is_array($result));
+        static::assertTrue(is_array($result));
     }
 }
