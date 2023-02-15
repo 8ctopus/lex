@@ -13,38 +13,38 @@ use IteratorAggregate;
 
 class Parser
 {
-    protected $allowPhp = false;
-    protected $regexSetup = false;
-    protected $scopeGlue = '.';
-    protected $tagRegex = '';
-    protected $cumulativeNoparse = false;
+    protected bool $allowPhp = false;
+    protected bool $regexSetup = false;
+    protected string $scopeGlue = '.';
+    protected string $tagRegex = '';
+    protected bool $cumulativeNoparse = false;
 
-    protected $inCondition = false;
+    protected bool $inCondition = false;
 
-    protected $variableRegex = '';
-    protected $variableLoopRegex = '';
-    protected $variableTagRegex = '';
+    protected string $variableRegex = '';
+    protected string $variableLoopRegex = '';
+    protected string $variableTagRegex = '';
 
-    protected $callbackNameRegex = '';
-    protected $callbackBlockRegex = '';
+    protected string $callbackNameRegex = '';
+    protected string $callbackBlockRegex = '';
 
-    protected $recursiveRegex = '';
+    protected string $recursiveRegex = '';
 
-    protected $noparseRegex = '';
+    protected string $noparseRegex = '';
 
-    protected $conditionalRegex = '';
-    protected $conditionalElseRegex = '';
-    protected $conditionalEndRegex = '';
-    protected $conditionalNotRegex = '';
-    protected $conditionalExistsRegex = '';
-    protected $conditionalData = [];
+    protected string $conditionalRegex = '';
+    protected string $conditionalElseRegex = '';
+    protected string $conditionalEndRegex = '';
+    protected string $conditionalNotRegex = '';
+    protected string $conditionalExistsRegex = '';
+    protected array $conditionalData = [];
 
-    protected static $extractions = [
+    protected static array $extractions = [
         'noparse' => [],
     ];
 
     protected static $data;
-    protected static $callbackData = [];
+    protected static array $callbackData = [];
 
     /**
      * The main Lex parser method.  Essentially acts as dispatcher to
