@@ -5,6 +5,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  *
+ * @coversNothing
  */
 final class ParserTest extends TestCase
 {

@@ -50,14 +50,14 @@ class Parser
      * The main Lex parser method.  Essentially acts as dispatcher to
      * all of the helper parser methods.
      *
-     * @param string       $text     Text to parse
-     * @param array|object $data     Array or object to use
-     * @param Callable|false $callback Callback to use for Callback Tags
-     * @param bool        $allowPhp
+     * @param string         $text     Text to parse
+     * @param array|object   $data     Array or object to use
+     * @param callable|false $callback Callback to use for Callback Tags
+     * @param bool           $allowPhp
      *
      * @return string
      */
-    public function parse(string $text, array|object $data = [], Callable|false $callback = false, bool $allowPhp = false) : string
+    public function parse(string $text, array|object $data = [], callable|false $callback = false, bool $allowPhp = false) : string
     {
         $this->setupRegex();
         $this->allowPhp = $allowPhp;
@@ -130,17 +130,17 @@ class Parser
      * Recursivly parses all of the variables in the given text and
      * returns the parsed text.
      *
-     * @param string       $text     Text to parse
-     * @param array|object $data     Array or object to use
-     * @param Callable|false   $callback
+     * @param string         $text     Text to parse
+     * @param array|object   $data     Array or object to use
+     * @param callable|false $callback
      *
      * @return string
      */
-    public function parseVariables(string $text, $data, Callable|false $callback = false) : string
+    public function parseVariables(string $text, $data, callable|false $callback = false) : string
     {
         $this->setupRegex();
 
-        /**
+        /*
          * $data_matches[][0][0] is the raw data loop tag
          * $data_matches[][0][1] is the offset of raw data loop tag
          * $data_matches[][1][0] is the data variable (dot notated)
@@ -196,13 +196,13 @@ class Parser
     /**
      * Parses all Callback tags, and sends them through the given $callback.
      *
-     * @param string $text          Text to parse
-     * @param mixed  $data
-     * @param Callable|false  $callback      Callback to apply to each tag
+     * @param string         $text     Text to parse
+     * @param mixed          $data
+     * @param callable|false $callback Callback to apply to each tag
      *
      * @return string
      */
-    public function parseCallbackTags(string $text, $data, Callable|false $callback) : string
+    public function parseCallbackTags(string $text, $data, callable|false $callback) : string
     {
         $this->setupRegex();
         $inCondition = $this->inCondition;
@@ -276,13 +276,13 @@ class Parser
     /**
      * Parses all conditionals, then executes the conditionals.
      *
-     * @param string $text     Text to parse
-     * @param mixed  $data     Data to use when executing conditionals
-     * @param Callable|false  $callback The callback to be used for tags
+     * @param string         $text     Text to parse
+     * @param mixed          $data     Data to use when executing conditionals
+     * @param callable|false $callback The callback to be used for tags
      *
      * @return string
      */
-    public function parseConditionals(string $text, $data, Callable|false $callback) : string
+    public function parseConditionals(string $text, $data, callable|false $callback) : string
     {
         $this->setupRegex();
         preg_match_all($this->conditionalRegex, $text, $matches, PREG_SET_ORDER);
@@ -367,13 +367,13 @@ class Parser
     /**
      * Goes recursively through a callback tag with a passed child array.
      *
-     * @param string $text      - The replaced text after a callback
-     * @param string $origText - The original text, before a callback is called
-     * @param Callable  $callback
+     * @param string   $text     - The replaced text after a callback
+     * @param string   $origText - The original text, before a callback is called
+     * @param callable $callback
      *
      * @return string $text
      */
-    public function parseRecursives(string $text, string $origText, Callable $callback) : string
+    public function parseRecursives(string $text, string $origText, callable $callback) : string
     {
         // Is there a {{ *recursive [array_key]* }} tag here, let's loop through it.
         if (preg_match($this->recursiveRegex, $text, $match)) {
@@ -623,13 +623,13 @@ class Parser
     /**
      * Extracts the looped tags so that we can parse conditionals then re-inject.
      *
-     * @param string     $text     The text to extract from
-     * @param mixed      $data
-     * @param Callable|false $callback
+     * @param string         $text     The text to extract from
+     * @param mixed          $data
+     * @param callable|false $callback
      *
      * @return string
      */
-    protected function extractLoopedTags(string $text, $data = [], Callable|false $callback = false) : string
+    protected function extractLoopedTags(string $text, $data = [], callable|false $callback = false) : string
     {
         /**
          * $matches[][0] is the raw match
@@ -772,13 +772,13 @@ class Parser
     /**
      * Parses a parameter string into an array
      *
-     * @param string $parameters
-     * @param array $data
-     * @param Callable|false $callback
+     * @param string         $parameters
+     * @param array          $data
+     * @param callable|false $callback
      *
      * @return array
      */
-    protected function parseParameters(string $parameters, array $data, Callable|false $callback) : array
+    protected function parseParameters(string $parameters, array $data, callable|false $callback) : array
     {
         $this->conditionalData = $data;
         $this->inCondition = true;
