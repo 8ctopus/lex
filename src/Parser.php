@@ -132,11 +132,11 @@ class Parser
      *
      * @param string       $text     Text to parse
      * @param array|object $data     Array or object to use
-     * @param null|mixed   $callback
+     * @param Callable|false   $callback
      *
      * @return string
      */
-    public function parseVariables(string $text, $data, $callback = null) : string
+    public function parseVariables(string $text, $data, Callable|false $callback = false) : string
     {
         $this->setupRegex();
 
@@ -278,11 +278,11 @@ class Parser
      *
      * @param string $text     Text to parse
      * @param mixed  $data     Data to use when executing conditionals
-     * @param mixed  $callback The callback to be used for tags
+     * @param Callable|false  $callback The callback to be used for tags
      *
      * @return string
      */
-    public function parseConditionals(string $text, $data, $callback) : string
+    public function parseConditionals(string $text, $data, Callable|false $callback) : string
     {
         $this->setupRegex();
         preg_match_all($this->conditionalRegex, $text, $matches, PREG_SET_ORDER);
@@ -369,11 +369,11 @@ class Parser
      *
      * @param string $text      - The replaced text after a callback
      * @param string $origText - The original text, before a callback is called
-     * @param mixed  $callback
+     * @param Callable  $callback
      *
      * @return string $text
      */
-    public function parseRecursives(string $text, string $origText, $callback) : string
+    public function parseRecursives(string $text, string $origText, Callable $callback) : string
     {
         // Is there a {{ *recursive [array_key]* }} tag here, let's loop through it.
         if (preg_match($this->recursiveRegex, $text, $match)) {
@@ -625,11 +625,11 @@ class Parser
      *
      * @param string     $text     The text to extract from
      * @param mixed      $data
-     * @param null|mixed $callback
+     * @param Callable|false $callback
      *
      * @return string
      */
-    protected function extractLoopedTags(string $text, $data = [], $callback = null) : string
+    protected function extractLoopedTags(string $text, $data = [], Callable|false $callback = false) : string
     {
         /**
          * $matches[][0] is the raw match
@@ -774,11 +774,11 @@ class Parser
      *
      * @param string $parameters
      * @param array $data
-     * @param mixed $callback
+     * @param Callable|false $callback
      *
      * @return array
      */
-    protected function parseParameters(string $parameters, array $data, $callback) : array
+    protected function parseParameters(string $parameters, array $data, Callable|false $callback) : array
     {
         $this->conditionalData = $data;
         $this->inCondition = true;
