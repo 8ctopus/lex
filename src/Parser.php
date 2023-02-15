@@ -52,12 +52,12 @@ class Parser
      *
      * @param string       $text     Text to parse
      * @param array|object $data     Array or object to use
-     * @param mixed        $callback Callback to use for Callback Tags
-     * @param mixed        $allowPhp
+     * @param Callable|false $callback Callback to use for Callback Tags
+     * @param bool        $allowPhp
      *
      * @return string
      */
-    public function parse(string $text, $data = [], $callback = false, $allowPhp = false) : string
+    public function parse(string $text, $data = [], Callable|false $callback = false, bool $allowPhp = false) : string
     {
         $this->setupRegex();
         $this->allowPhp = $allowPhp;
@@ -761,14 +761,13 @@ class Parser
     /**
      * Parses a parameter string into an array
      *
-     * @param   string  The string of parameters
-     * @param mixed $parameters
-     * @param mixed $data
+     * @param string $parameters
+     * @param array $data
      * @param mixed $callback
      *
      * @return array
      */
-    protected function parseParameters($parameters, $data, $callback) : array
+    protected function parseParameters(string $parameters, array $data, $callback) : array
     {
         $this->conditionalData = $data;
         $this->inCondition = true;
@@ -784,6 +783,7 @@ class Parser
             [$this, 'processParamVar'],
             $parameters
         );
+
         if ($callback) {
             $parameters = preg_replace('/(.*?\s*=\s*(?!\{\s*)(?!__))(' . $this->callbackNameRegex . ')(?!\s*\})\b/', '$1{$2}', $parameters);
             $parameters = $this->parseCallbackTags($parameters, $data, $callback);
