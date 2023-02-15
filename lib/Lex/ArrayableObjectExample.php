@@ -16,14 +16,14 @@ class ArrayableObjectExample implements ArrayableInterface
      *
      * @var array
      */
-    private $attributes = ['foo' => 'bar'];
+    private array $attributes = ['foo' => 'bar'];
 
     /**
      * Define how the object will be converted to an array
      *
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->attributes;
     }
