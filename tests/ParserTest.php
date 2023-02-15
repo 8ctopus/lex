@@ -29,7 +29,7 @@ final class ParserTest extends TestCase
         ];
     }
 
-    public function testCanSetScopeGlue(): void
+    public function testCanSetScopeGlue() : void
     {
         $this->parser->scopeGlue('~');
         $scopeGlue = new ReflectionProperty($this->parser, 'scopeGlue');
@@ -40,13 +40,13 @@ final class ParserTest extends TestCase
         static::assertSame('~', $scopeGlue->getValue($this->parser));
     }
 
-    public function testCanGetScopeGlue(): void
+    public function testCanGetScopeGlue() : void
     {
         $this->parser->scopeGlue('~');
         static::assertSame('~', $this->parser->scopeGlue());
     }
 
-    public function testValueToLiteral(): void
+    public function testValueToLiteral() : void
     {
         $method = new ReflectionMethod($this->parser, 'valueToLiteral');
 
@@ -78,7 +78,7 @@ final class ParserTest extends TestCase
      *
      * @param mixed $data
      */
-    public function testGetVariable($data): void
+    public function testGetVariable($data) : void
     {
         $method = new ReflectionMethod($this->parser, 'getVariable');
 
@@ -98,7 +98,7 @@ final class ParserTest extends TestCase
     /**
      * Regression test for https://www.pyrocms.com/forums/topics/view/19686
      */
-    public function testFalseyVariableValuesParseProperly(): void
+    public function testFalseyVariableValuesParseProperly() : void
     {
         $data = [
             'zero_num' => 0,
@@ -122,7 +122,7 @@ final class ParserTest extends TestCase
      *
      * @param mixed $data
      */
-    public function testExists($data): void
+    public function testExists($data) : void
     {
         $result = $this->parser->parse('{{ if exists name }}1{{ else }}0{{ endif }}', $data);
         static::assertSame('1', $result);
@@ -138,7 +138,7 @@ final class ParserTest extends TestCase
      *
      * @param mixed $data
      */
-    public function testUndefinedInConditional($data): void
+    public function testUndefinedInConditional($data) : void
     {
         $result = $this->parser->parse('{{ if age }}0{{ else }}1{{ endif }}', $data);
         static::assertSame('1', $result);
@@ -147,7 +147,7 @@ final class ParserTest extends TestCase
     /**
      * Regression test for https://github.com/pyrocms/pyrocms/issues/1906
      */
-    public function testCallbacksInConditionalComparison(): void
+    public function testCallbacksInConditionalComparison() : void
     {
         $result = $this->parser->parse("{{ if foo.bar.baz == 'yes' }}Yes{{ else }}No{{ endif }}", [], function ($name, $attributes, $content) {
             if ($name === 'foo.bar.baz') {
@@ -166,7 +166,7 @@ final class ParserTest extends TestCase
      * - TOTAL_GT_0   Tests total > 0
      * - HAS_ENTRIES  Tests isset(entries)
      */
-    public function testDeepCallbacksInConditionalComparison(): void
+    public function testDeepCallbacksInConditionalComparison() : void
     {
         $data = [
             'pagination' => null,
@@ -314,7 +314,7 @@ HTML;
         static::assertSame($expected_html, $result);
     }
 
-    public function testSelfClosingTag(): void
+    public function testSelfClosingTag() : void
     {
         $self = $this;
         $result = $this->parser->parse('{{ foo.bar.baz /}}Here{{ foo.bar.baz }}Content{{ /foo.bar.baz }}', [], function ($name, $attributes, $content) {
@@ -330,7 +330,7 @@ HTML;
     /**
      * Test that the toArray method converts an standard object to an array
      */
-    public function testObjectToArray(): void
+    public function testObjectToArray() : void
     {
         $data = new stdClass();
         $data->foo = 'bar';
@@ -343,7 +343,7 @@ HTML;
     /**
      * Test that the toArray method converts an object that implements ArrayableInterface to an array
      */
-    public function testArrayableInterfaceToArray(): void
+    public function testArrayableInterfaceToArray() : void
     {
         $data = new Lex\ArrayableObjectExample();
 
@@ -355,7 +355,7 @@ HTML;
     /**
      * Test that the toArray method converts an integer to an array
      */
-    public function testIntegerToArray(): void
+    public function testIntegerToArray() : void
     {
         $data = 1;
 
@@ -367,7 +367,7 @@ HTML;
     /**
      * Test that the toArray method converts an string to an array
      */
-    public function testStringToArray(): void
+    public function testStringToArray() : void
     {
         $data = 'Hello World';
 
@@ -379,7 +379,7 @@ HTML;
     /**
      * Test that the toArray method converts an boolean to an array
      */
-    public function testBooleanToArray(): void
+    public function testBooleanToArray() : void
     {
         $data = true;
 
@@ -391,7 +391,7 @@ HTML;
     /**
      * Test that the toArray method converts an null value to an array
      */
-    public function testNullToArray(): void
+    public function testNullToArray() : void
     {
         $data = null;
 
@@ -403,7 +403,7 @@ HTML;
     /**
      * Test that the toArray method converts an float value to an array
      */
-    public function testFloatToArray(): void
+    public function testFloatToArray() : void
     {
         $data = 1.23456789;
 

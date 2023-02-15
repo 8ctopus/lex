@@ -23,7 +23,7 @@ class ArrayableObjectExample implements ArrayableInterface
      *
      * @return array
      */
-    public function toArray(): array
+    public function toArray() : array
     {
         return $this->attributes;
     }
