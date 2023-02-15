@@ -43,7 +43,7 @@ class Parser
         'noparse' => [],
     ];
 
-    protected static $data;
+    protected static array|object $data;
     protected static array $callbackData = [];
 
     /**
@@ -57,7 +57,7 @@ class Parser
      *
      * @return string
      */
-    public function parse(string $text, $data = [], Callable|false $callback = false, bool $allowPhp = false) : string
+    public function parse(string $text, array|object $data = [], Callable|false $callback = false, bool $allowPhp = false) : string
     {
         $this->setupRegex();
         $this->allowPhp = $allowPhp;
@@ -68,13 +68,13 @@ class Parser
         }
 
         // Is this the first time parse() is called?
-        if (self::$data === null) {
+        if (!isset(self::$data)) {
             // Let's store the local data array for later use.
             self::$data = $data;
         } else {
             // Let's merge the current data array with the local scope variables
             // So you can call local variables from within blocks.
-            $data = array_merge(self::$data, $data);
+            $data = array_merge((array) self::$data, $data);
 
             // Since this is not the first time parse() is called, it's most definately a callback,
             // let's store the current callback data with the the local data
@@ -197,13 +197,12 @@ class Parser
      * Parses all Callback tags, and sends them through the given $callback.
      *
      * @param string $text          Text to parse
-     * @param mixed  $callback      Callback to apply to each tag
-     * @param bool   $inConditional Whether we are in a conditional tag
      * @param mixed  $data
+     * @param Callable|false  $callback      Callback to apply to each tag
      *
      * @return string
      */
-    public function parseCallbackTags(string $text, $data, $callback) : string
+    public function parseCallbackTags(string $text, $data, Callable|false $callback) : string
     {
         $this->setupRegex();
         $inCondition = $this->inCondition;
@@ -213,6 +212,7 @@ class Parser
         } else {
             $regex = '/\{\{\s*(' . $this->variableRegex . ')(\s+.*?)?\s*(\/)?\}\}/ms';
         }
+
         /**
          * $match[0][0] is the raw tag
          * $match[0][1] is the offset of raw tag
@@ -242,9 +242,11 @@ class Parser
             if (isset($match[3])) {
                 $selfClosed = true;
             }
+
             $content = '';
 
             $tempText = substr($text, $start + strlen($tag));
+
             if (preg_match('/\{\{\s*\/' . preg_quote($name, '/') . '\s*\}\}/m', $tempText, $match, PREG_OFFSET_CAPTURE) && !$selfClosed) {
                 $content = substr($tempText, 0, $match[0][1]);
                 $tag .= $content . $match[0][0];
@@ -263,6 +265,7 @@ class Parser
             if ($inCondition) {
                 $replacement = $this->valueToLiteral($replacement);
             }
+
             $text = preg_replace('/' . preg_quote($tag, '/') . '/m', addcslashes($replacement, '\\$'), $text, 1);
             $text = $this->injectExtractions($text, 'nested_looped_tags');
         }
@@ -510,6 +513,7 @@ class Parser
     protected function processConditionVar(array $match) : string
     {
         $var = is_array($match) ? $match[0] : $match;
+
         if (in_array(strtolower($var), ['true', 'false', 'null', 'or', 'and'], true)
             || strpos($var, '__cond_str') === 0
             || strpos($var, '__cond_exists') === 0
@@ -755,7 +759,14 @@ class Parser
             throw new ParsingException($output . str_replace(['?>', '<?php '], '', $text));
         }
 
-        return ob_get_clean();
+        $result = ob_get_clean();
+
+        if ($result === false) {
+            $output = 'You have a syntax error in your Lex tags (2). The offending code: ';
+            throw new ParsingException($output . str_replace(['?>', '<?php '], '', $text));
+        }
+
+        return $result;
     }
 
     /**
