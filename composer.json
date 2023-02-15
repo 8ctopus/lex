@@ -1,5 +1,5 @@
 {
-    "name": "pyrocms/lex",
+    "name": "8ctopus/lex",
     "type": "library",
     "description": "A lightweight template parser.",
     "keywords": ["template","parser"],
