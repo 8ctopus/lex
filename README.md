@@ -1,9 +1,13 @@
 Lex
 ===
 
-[![Build Status](https://secure.travis-ci.org/pyrocms/lex.png?branch=master)](http://travis-ci.org/pyrocms/lex)
-
 Lex is a lightweight template parser.
+
+[![Latest Stable Version](http://poser.pugx.org/8ctopus/lex/v)](https://packagist.org/packages/8ctopus/lex)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/8ctopus/lex/ci.yaml?branch=master)
+[![Total Downloads](http://poser.pugx.org/8ctopus/lex/downloads)](https://packagist.org/packages/8ctopus/lex)
+[![PHP Version Require](http://poser.pugx.org/8ctopus/lex/require/php)](https://packagist.org/packages/8ctopus/lex)
+[![License](http://poser.pugx.org/8ctopus/lex/license)](https://packagist.org/packages/8ctopus/lex)
 
 _Lex is released under the MIT License and is Copyrighted 2011 - 2014 PyroCMS Team._
 
