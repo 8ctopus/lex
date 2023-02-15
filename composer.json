@@ -28,6 +28,7 @@
         }
     },
     "replace": {
-        "fuel/lex": "*"
+        "fuel/lex": "*",
+        "pyrocms/lex": "*"
     }
 }
