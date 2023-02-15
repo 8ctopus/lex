@@ -28,8 +28,8 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "autoload": {
-        "psr-0": {
-            "Lex": "lib/"
+        "psr-4": {
+            "Lex\\": "lib/Lex/"
         }
     },
     "scripts": {
