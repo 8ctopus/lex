@@ -150,7 +150,9 @@ class Parser
          */
         if (preg_match_all($this->variableLoopRegex, $text, $dataMatches, PREG_SET_ORDER + PREG_OFFSET_CAPTURE)) {
             foreach ($dataMatches as $index => $match) {
-                if ($loopData = $this->getVariable($match[1][0], $data)) {
+                $loopData = $this->getVariable($match[1][0], $data);
+
+                if ($loopData) {
                     $loopedText = '';
                     if (is_array($loopData) || ($loopData instanceof IteratorAggregate)) {
                         foreach ($loopData as $itemData) {
@@ -180,7 +182,9 @@ class Parser
          */
         if (preg_match_all($this->variableTagRegex, $text, $dataMatches)) {
             foreach ($dataMatches[1] as $index => $var) {
-                if (($val = $this->getVariable($var, $data, '__lex_no_value__')) !== '__lex_no_value__') {
+                $val = $this->getVariable($var, $data, '__lex_no_value__');
+
+                if ($val !== '__lex_no_value__') {
                     $text = str_replace($dataMatches[0][$index], $val ?? '', $text);
                 }
             }
@@ -791,7 +795,7 @@ class Parser
 
         if (preg_match_all('/(.*?)\s*=\s*(\'|"|&#?\w+;)(.*?)(?<!\\\\)\2/s', trim($parameters), $matches)) {
             $return = [];
-            foreach ($matches[1] as $i => $attr) {
+            foreach (array_keys($matches[1]) as $i) {
                 $return[trim($matches[1][$i])] = stripslashes($matches[3][$i]);
             }
 
