@@ -1,15 +1,15 @@
-Lex
-===
+# Lex
 
+[![packagist](http://poser.pugx.org/8ctopus/lex/v)](https://packagist.org/packages/8ctopus/lex)
+[![downloads](http://poser.pugx.org/8ctopus/lex/downloads)](https://packagist.org/packages/8ctopus/lex)
+[![min php version](http://poser.pugx.org/8ctopus/lex/require/php)](https://packagist.org/packages/8ctopus/lex)
+[![license](http://poser.pugx.org/8ctopus/lex/license)](https://packagist.org/packages/8ctopus/lex)
+[![tests](https://github.com/8ctopus/lex/actions/workflows/tests.yml/badge.svg)](https://github.com/8ctopus/lex/actions/workflows/tests.yml)
+![code coverage badge](https://raw.githubusercontent.com/8ctopus/lex/image-data/coverage.svg)
+![lines of code](https://raw.githubusercontent.com/8ctopus/lex/image-data/lines.svg)
 Lex is a lightweight template parser.
 
 This project is a detached fork from [https://github.com/pyrocms/lex](https://github.com/pyrocms/lex).
-
-[![Latest Stable Version](http://poser.pugx.org/8ctopus/lex/v)](https://packagist.org/packages/8ctopus/lex)
-![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/8ctopus/lex/ci.yaml?branch=master)
-[![Total Downloads](http://poser.pugx.org/8ctopus/lex/downloads)](https://packagist.org/packages/8ctopus/lex)
-[![PHP Version Require](http://poser.pugx.org/8ctopus/lex/require/php)](https://packagist.org/packages/8ctopus/lex)
-[![License](http://poser.pugx.org/8ctopus/lex/license)](https://packagist.org/packages/8ctopus/lex)
 
 _Lex is released under the MIT License and is Copyrighted 2011 - 2014 PyroCMS Team._
 
