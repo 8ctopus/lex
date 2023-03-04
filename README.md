@@ -7,6 +7,7 @@
 [![tests](https://github.com/8ctopus/lex/actions/workflows/tests.yml/badge.svg)](https://github.com/8ctopus/lex/actions/workflows/tests.yml)
 ![code coverage badge](https://raw.githubusercontent.com/8ctopus/lex/image-data/coverage.svg)
 ![lines of code](https://raw.githubusercontent.com/8ctopus/lex/image-data/lines.svg)
+
 Lex is a lightweight template parser.
 
 This project is a detached fork from [https://github.com/pyrocms/lex](https://github.com/pyrocms/lex).
