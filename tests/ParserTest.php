@@ -16,7 +16,7 @@ final class ParserTest extends TestCase
         $this->parser = new Lex\Parser();
     }
 
-    public function templateDataProvider()
+    public static function templateDataProvider()
     {
         return [
             [
