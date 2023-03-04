@@ -19,3 +19,4 @@ interface ArrayableInterface
      */
     public function toArray() : array;
 }
+
