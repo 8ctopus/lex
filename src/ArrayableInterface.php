@@ -1,7 +1,5 @@
 <?php
 
-namespace Lex;
-
 /**
  * Part of the Lex Template Parser.
  *
@@ -9,6 +7,9 @@ namespace Lex;
  * @license    MIT License
  * @copyright  2011 - 2014 PyroCMS
  */
+
+namespace Lex;
+
 interface ArrayableInterface
 {
     /**
